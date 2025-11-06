@@ -19,10 +19,10 @@
   },
   "type": "module",
   "scripts": {
-    "test": "vitest"
+    "test": "vitest run --reporter=html --outputFile=reports/vitest-report.html"
   },
-  "dependencies": {},
   "devDependencies": {
+    "@vitest/ui": "^4.0.7",
     "assertion-error": "^2.0.1",
     "chai": "^6.2.0",
     "debug": "^4.4.3",
