@@ -1,0 +1,37 @@
+const BASE_URL = 'https://fakestoreapi.com';
+
+//  This function fetches all products from the fake store API
+export async function getProducts() {
+  try {
+    const response = await fetch(`${BASE_URL}/products`);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    throw error;
+  }
+}
+
+// This function fetches a single product by its ID from the fake store API
+export async function getProduct(id) {
+  try {
+    const response = await fetch(`${BASE_URL}/products/${id}`);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching product by ID:', error);
+    throw error;
+  }
+}
+
+// This function fetches product categories from the fake store API
+export async function getProductsCategories() {
+  try {
+    const response = await fetch(`${BASE_URL}/products/categories`);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching products categories:', error);
+    throw error;
+  }
+}
