@@ -30,7 +30,7 @@ describe('GET products API tests', () => {
       const products = await getProducts();
 
       expect(fetch).toHaveBeenCalledWith('https://fakestoreapi.com/products');
-      expect(products).toEqual(mockData);
+      expect(products).toEqual(mockProducts);
       expect(Array.isArray(products)).toBe(true);
       expect(products[0]).toHaveProperty('id');
       expect(products[0]).toHaveProperty('title');
