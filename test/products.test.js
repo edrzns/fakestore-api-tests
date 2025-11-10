@@ -1,5 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { getProducts, getProduct, getProductsCategories } from '../src/api/products.js';
+import {
+  getProducts,
+  getProduct,
+  getProductsCategories,
+  createProduct,
+} from '../src/api/products.js';
 
 global.fetch = vi.fn();
 
@@ -100,6 +105,77 @@ describe('GET products API tests', () => {
       fetch.mockRejectedValueOnce(new Error('Failed to fetch categories'));
 
       await expect(getProductsCategories()).rejects.toThrow('Failed to fetch categories');
+    });
+  });
+});
+
+describe('POST products API tests', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+  afterEach(() => {
+    vi.resetAllMocks();
+  });
+
+  describe('POST product', () => {
+    let mockNewProductInput;
+    let mockNewProductResponse;
+    let mockPostSuccess;
+    let mockPostFailure;
+
+    beforeEach(() => {
+      mockNewProductInput = {
+        title: 'Super Test Gadget',
+        price: 999.99,
+        description: 'A revolutionary device.',
+        image: 'https://i.pravatar.cc/150',
+        category: 'electronics',
+      };
+
+      mockNewProductResponse = {
+        ...mockNewProductInput,
+        id: 21,
+      };
+
+      mockPostSuccess = () => {
+        return global.fetch.mockResolvedValue({
+          ok: true,
+          json: async () => mockNewProductResponse,
+        });
+      };
+
+      mockPostFailure = (status = 400) => {
+        return global.fetch.mockResolvedValue({
+          ok: false,
+          status: status,
+          json: async () => ({ message: 'Validation failed' }),
+        });
+      };
+    });
+
+    it('hould successfully create a new product and return the object with an ID', async () => {
+      const productData = mockNewProductInput;
+      mockPostSuccess();
+
+      const createdProduct = await createProduct(productData);
+
+      expect(global.fetch).toHaveBeenCalledWith('https://fakestoreapi.com/products', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(productData),
+      });
+      expect(createdProduct).toEqual(mockNewProductResponse);
+      expect(createdProduct).toHaveProperty('id');
+    });
+
+    it('should throw an error when creating product fails', async () => {
+      const productData = { title: 'Missing Price Data' };
+      mockPostFailure(400);
+
+      const createdProduct = await createProduct(productData);
+
+      expect(createdProduct).toBeNull();
+      expect(global.fetch).toHaveBeenCalledTimes(1);
     });
   });
 });
