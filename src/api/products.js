@@ -56,3 +56,24 @@ export async function createProduct(productData) {
     return null;
   }
 }
+
+// This function updates product on fake store API
+export async function updateProduct(productData) {
+  try {
+    const response = await fetch(`${BASE_URL}/products/${id}`, {
+      method: 'PUT',
+      headers: {
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify(productData),
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Failed to create product:', error);
+    return null;
+  }
+}
